@@ -25,6 +25,7 @@ public class ClientController implements Initializable {
     private PrintWriter out;
     private char mark;
     private Map<Integer, Button> boardButtons;
+    public MusicPlayer musicPlayer;
 
     @FXML
     private TextField textFieldIP;//Граце водить свій IP
@@ -45,6 +46,7 @@ public class ClientController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        musicPlayer = new MusicPlayer();
         boardButtons = new HashMap<>();
         boardButtons.put(0, button0);
         boardButtons.put(1, button1);
@@ -72,6 +74,7 @@ public class ClientController implements Initializable {
             int port = Integer.parseInt(textFieldPort.getText());
             try {
                 connectToServer(serverAddress, port);
+                musicPlayer.playMusic("/music/background.mp3");
                 textStatus.setText("Підключення клієнта:"+serverAddress+":"+port);
             } catch (Exception e) {
                 redText.setText("Помилка підключення: " + e.getMessage());
@@ -133,14 +136,17 @@ public class ClientController implements Initializable {
 
             }else if (finalResponse.startsWith("YOUR_TURN")) {
                 clientText.setText(finalResponse.substring(10));
-            } else if (finalResponse.startsWith("OPPONENT_TURN")) {
+            }else if(finalResponse.startsWith("OPPONENT_TURN")) {
                 clientText.setText(finalResponse.substring(13));
             }else if (finalResponse.startsWith("VICTORY")) {
                 clientText.setText(finalResponse.substring(8));
+                musicPlayer.playSound("/sound/win.mp3");
             } else if (finalResponse.startsWith("DEFEAT")) {
                 clientText.setText(finalResponse.substring(8));
+                musicPlayer.playSound("/sound/lose.mp3");
             } else if (finalResponse.startsWith("TIE")) {
                 clientText.setText(finalResponse.substring(3));
+                musicPlayer.playSound("sound/tie.mp3");
             } else if (finalResponse.startsWith("MESSAGE")) {
                 clientText.setText(finalResponse.substring(8));
             }
@@ -170,6 +176,8 @@ public class ClientController implements Initializable {
         clientText.setText("");
         try {
             out.println("RESET");
+            musicPlayer.stopMusic();
+            musicPlayer.playMusic("/music/background.mp3");
         } catch (Exception e) {
             redText.setText("Помилка скидання гри: " + e.getMessage());
         }

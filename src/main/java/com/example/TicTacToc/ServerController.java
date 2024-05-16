@@ -106,6 +106,8 @@ public class ServerController implements Initializable {
         }
     }
 
+
+
     private void stopServer() {
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
@@ -121,6 +123,8 @@ public class ServerController implements Initializable {
             redText.setText("Помилка запущення сервера: " + e.getMessage());
         }
     }
+
+
 
     class Game {
         public final Player[] board =
@@ -170,6 +174,7 @@ public class ServerController implements Initializable {
                 if (hasWinner()) {
                     currentPlayer.output.println("VICTORY Ти виграв");
                     currentPlayer.opponent.output.println("DEFEAT  Ти програв");
+
                 } else if (boardFilledUp()) {
                     currentPlayer.output.println("TIE Нічия");
                     currentPlayer.opponent.output.println("TIE Нічия");
